@@ -1,0 +1,10 @@
+Cosmic Warrior Prompt:
+Generate a celestial warrior avatar with skin like polished obsidian, adorned with swirling galaxy tattoos that seem to move and shift. Give them ethereal silver armor that blends metallic precision with fluid, almost liquid-like movements, interlaced with starlight. Their eyes should burn with the intensity of a supernova, set in a face that speaks of ancient cosmic battles and infinite wisdom.
+Steampunk Inventor Prompt:
+Create an eccentric steampunk inventor avatar with copper-toned skin, intricate brass mechanical components seamlessly integrated into their body. Style their hair as a wild, windswept arrangement with gears and small mechanical birds nested within. Dress them in a layered coat of deep emerald and burnished leather, with clockwork prosthetic arms that shimmer with intricate moving parts and glowing amber energy conduits.
+Forest Spirit Prompt:
+Craft a woodland spirit avatar that exists between human and nature, with skin like living bark that transitions into moss and delicate fern-like tendrils. Their body should blur the line between humanoid form and natural landscape, with eyes that reflect the deepest green of an ancient forest, and hair that flows like living branches intertwined with fireflies and soft luminescent flowers.
+Cybernetic Nomad Prompt:
+Design a post-apocalyptic cybernetic nomad with weathered golden-brown skin marked by intricate bio-digital tattoos. Give them a mix of worn leather and high-tech adaptive materials, with one eye a complex optical sensor and the other a striking human eye that tells stories of survival. Surround them with a subtle aura of electromagnetic energy, suggesting advanced but jury-rigged technological augmentations.
+Mythical Shapeshifter Prompt:
+Imagine an avatar of a mythical shapeshifter caught mid-transformation, with skin that ripples between human form and something more elemental. Create a being whose body suggests multiple potential forms - part wolf, part human, part living shadow - with eyes that hold the wisdom of countless transformations and a presence that speaks of ancient, primal magic.
