@@ -1,126 +1,130 @@
 <template>
-    <div class="creature-generator">
-        <!-- Decorative elements -->
-        <div class="energy-pulse"></div>
-        <div class="energy-pulse"></div>
-        <div class="energy-pulse"></div>
-        <div class="energy-pulse"></div>
-  
-        <div class="header-container">
-            <h1>Who You Were Meant To Be</h1>
-            <h2>Craft Your Ultimate Avatar, describe your vision and witness it materialize.</h2>
-        </div>
-    
-        <div class="container">
-            <div class="input-section">
-            <textarea v-model="prompt" placeholder="Create your alter ego! Try: 'A secret agent in a tuxedo with futuristic glasses and a sleek hoverboard.'"></textarea>
-            <button @click="generateAvatar" >Create Your Legend</button>
-            
-            <div class="loading" v-show="isLoading">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            </div>
-    
-            <div class="image-container">
-            <div class="frame">
-                <div v-if="!imageUrl" class="empty-frame">
-                    <h3>Your creation will manifest here</h3>
-                </div>
-                <!-- <img src="path-to-generated-image.jpg" alt="Generated creature"> -->
-                <img v-if="imageUrl" :src="imageUrl" alt="Generated avatar">
-                </div>
-            </div>
-        </div>
+  <div class="creature-generator">
+    <!-- Decorative elements -->
+    <div class="energy-pulse"/>
+    <div class="energy-pulse"/>
+    <div class="energy-pulse"/>
+    <div class="energy-pulse"/>
+
+    <div class="header-container">
+      <h1>Who You Were Meant To Be</h1>
+      <h2>Craft Your Ultimate Avatar, describe your vision and witness it materialize.</h2>
     </div>
+  
+    <div class="container">
+      <div class="input-section">
+        <textarea v-model="prompt" placeholder="Create your alter ego! Try: 'A secret agent in a tuxedo with futuristic glasses and a sleek hoverboard.'"/>
+        <button @click="generateAvatar" >Create Your Legend</button>
+          
+        <div class="loading" v-show="isLoading">
+          <div/>
+          <div/>
+          <div/>
+        </div>
+      </div>
+  
+      <div class="image-container">
+        <div class="frame">
+          <div v-if="!imageUrl" class="empty-frame">
+            <h3>Your creation will manifest here</h3>
+          </div>
+          <!-- <img src="path-to-generated-image.jpg" alt="Generated creature"> -->
+          <img v-if="imageUrl" :src="imageUrl" alt="Generated avatar">
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { OpenAI } from 'openai';
 
-    export default defineComponent({
-        name: 'AvatarGenerator',
-        setup() {
-            // Declare variables
-            const prompt = ref('');
-            const isLoading = ref(false);
-            const imageUrl = ref('');
-            const errorMessage = ref('');
-            const loadingMessage = ref('');
-            const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+export default defineComponent({
+  name: 'AvatarGenerator',
+  setup(_props, { emit }) {  // Add context object with emit
+      // Declare variables
+      const prompt = ref('');
+      const isLoading = ref(false);
+      const imageUrl = ref('');
+      const errorMessage = ref('');
+      const loadingMessage = ref('');
 
-            // Initialize OpenAI
-            const openai = new OpenAI({
-                apiKey: apiKey,
-                dangerouslyAllowBrowser: true
-            })
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-            // logic to toggle loading
-            function toggleLoadingState(loading: boolean) {
-                isLoading.value = loading;
-                if (loading) {
-                    loadingMessage.value = 'Creating your avatar...'
-                } else {
-                    loadingMessage.value = "";
-                }
-            }
+      // Initialize OpenAI
+      const openai = new OpenAI({
+          apiKey: apiKey,
+          dangerouslyAllowBrowser: true
+      })
 
-            // Generate creature image using OpenAI DALL-E
-            const generateAvatar = async () => {
-                if (!prompt.value.trim()) {
-                    alert("Please describe your creature first!");
-                    return;
-                }
-            // Show loading state
-            toggleLoadingState(true);
+      // logic to toggle loading
+      function toggleLoadingState(loading: boolean) {
+          isLoading.value = loading;
+          if (loading) {
+              loadingMessage.value = 'Creating your avatar...'
+          } else {
+              loadingMessage.value = "";
+          }
+      }
 
-            try {
-                // Enhance prompt output
-                const enhancedPrompt = `Create a visually striking, fantastical creation: ${prompt.value}. Make it highly detailed, dramatic, with vibrant colors and impressive features while still maintaining a friendly appearance.`
+      // Generate creature image using OpenAI DALL-E
+      const generateAvatar = async () => {
+          if (!prompt.value.trim()) {
+              // Use emit from the context instead of this.$emit
+              emit('notification', 'Please enter a description');
+              return;
+          }
+          // Show loading state
+          toggleLoadingState(true);
 
-                // Call OpenAI API
-                const response = await openai.images.generate({
-                    model: 'dall-e-3',
-                    prompt: enhancedPrompt,
-                    n: 1,
-                    size: "1024x1024",
-                    style: 'vivid'
-                })
+          try {
+              // Enhance prompt output
+              const enhancedPrompt = `Create a visually striking, fantastical creation: ${prompt.value}. Make it highly detailed, dramatic, with vibrant colors and impressive features while still maintaining a friendly appearance.`
 
-                // Check if URL exists before assigning
-                // Check if URL exists before assigning
-                if (response.data[0]?.url) {
-                    imageUrl.value = response.data[0].url;
-                    errorMessage.value = ''; // Clear any previous errors
-                } else {
-                    errorMessage.value = "No image URL was returned";
-                }
+              // Call OpenAI API
+              const response = await openai.images.generate({
+                  model: 'dall-e-3',
+                  prompt: enhancedPrompt,
+                  n: 1,
+                  size: "1024x1024",
+                  style: 'vivid'
+              })
 
-                console.log("Image created successfully");
-            } catch (error: any) {
-                console.error('Error generating image:', error);
-                errorMessage.value = error.message;
-            } finally {
-                // Reset loading state
-                toggleLoadingState(false);
-                prompt.value = '';
-            }
-            }
+              // Check if URL exists before assigning
+              if (response.data[0]?.url) {
+                  imageUrl.value = response.data[0].url;
+                  errorMessage.value = ''; // Clear any previous errors
+              } else {
+                  errorMessage.value = "No image URL was returned";
+                  emit('notification', 'Failed to generate image');
+              }
 
-            // Return data and methods
-            return {
-                prompt,
-                isLoading,
-                imageUrl,
-                errorMessage,
-                loadingMessage,
-                generateAvatar
-            };
-        }
-    })
+              console.log("Image created successfully");
+          } catch (error: any) {
+              console.error('Error generating image:', error);
+              errorMessage.value = error.message;
+              emit('notification', `Error: ${error.message}`);
+          } finally {
+              // Reset loading state
+              toggleLoadingState(false);
+              prompt.value = '';
+          }
+      }
+
+      // Return data and methods
+      return {
+          prompt,
+          isLoading,
+          imageUrl,
+          errorMessage,
+          loadingMessage,
+          generateAvatar
+      };
+  }
+})
 </script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Honk&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 

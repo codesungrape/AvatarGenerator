@@ -5,20 +5,29 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint --c .js,.vue,.ts --config eslint.config.mjs src",
+    "lint:fix": "eslint --c .js,.vue,.ts --config eslint.config.mjs src --fix",
+    "format": "eslint --c .js,.vue,.ts --config eslint.config.mjs src --fix"
   },
   "dependencies": {
     "openai": "^4.86.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@types/node": "^22.13.8",
+    "@typescript-eslint/parser": "^8.26.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.22.0",
+    "eslint-plugin-vue": "^10.0.0",
     "sass-embedded": "^1.85.1",
     "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.0",
     "vite": "^6.2.0",
+    "vue-eslint-parser": "^10.1.1",
     "vue-tsc": "^2.2.4"
   }
 }
