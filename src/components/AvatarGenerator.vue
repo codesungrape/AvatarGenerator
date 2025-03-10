@@ -57,6 +57,7 @@ export default defineComponent({
     const errorMessage = ref("");
     const loadingMessage = ref("");
 
+    // this error still allows it to be pushed into git- very confusing
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
     // Initialize OpenAI
