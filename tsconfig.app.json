@@ -16,11 +16,18 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "vite/client"], 
+    "types": ["node", "vite/client"],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.d.ts", "shims-vue.d.ts", "vite-env.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/**/*.d.ts",
+    "shims-vue.d.ts",
+    "vite-env.d.ts"
+  ]
 }

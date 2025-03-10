@@ -1,35 +1,41 @@
 <template>
   <div class="creature-generator">
     <!-- Decorative elements -->
-    <div class="energy-pulse"/>
-    <div class="energy-pulse"/>
-    <div class="energy-pulse"/>
-    <div class="energy-pulse"/>
+    <div class="energy-pulse" />
+    <div class="energy-pulse" />
+    <div class="energy-pulse" />
+    <div class="energy-pulse" />
 
     <div class="header-container">
       <h1>Who You Were Meant To Be</h1>
-      <h2>Craft Your Ultimate Avatar, describe your vision and witness it materialize.</h2>
+      <h2>
+        Craft Your Ultimate Avatar, describe your vision and witness it
+        materialize.
+      </h2>
     </div>
-  
+
     <div class="container">
       <div class="input-section">
-        <textarea v-model="prompt" placeholder="Create your alter ego! Try: 'A secret agent in a tuxedo with futuristic glasses and a sleek hoverboard.'"/>
-        <button @click="generateAvatar" >Create Your Legend</button>
-          
+        <textarea
+          v-model="prompt"
+          placeholder="Create your alter ego! Try: 'A secret agent in a tuxedo with futuristic glasses and a sleek hoverboard.'"
+        />
+        <button @click="generateAvatar">Create Your Legend</button>
+
         <div class="loading" v-show="isLoading">
-          <div/>
-          <div/>
-          <div/>
+          <div />
+          <div />
+          <div />
         </div>
       </div>
-  
+
       <div class="image-container">
         <div class="frame">
           <div v-if="!imageUrl" class="empty-frame">
             <h3>Your creation will manifest here</h3>
           </div>
           <!-- <img src="path-to-generated-image.jpg" alt="Generated creature"> -->
-          <img v-if="imageUrl" :src="imageUrl" alt="Generated avatar">
+          <img v-if="imageUrl" :src="imageUrl" alt="Generated avatar" />
         </div>
       </div>
     </div>
@@ -37,100 +43,101 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { OpenAI } from 'openai';
+import { defineComponent, ref } from "vue";
+import { OpenAI } from "openai";
 
 export default defineComponent({
-  name: 'AvatarGenerator',
-  setup(_props, { emit }) {  // Add context object with emit
-      // Declare variables
-      const prompt = ref('');
-      const isLoading = ref(false);
-      const imageUrl = ref('');
-      const errorMessage = ref('');
-      const loadingMessage = ref('');
+  name: "AvatarGenerator",
+  setup(_props, { emit }) {
+    // Add context object with emit
+    // Declare variables
+    const prompt = ref("");
+    const isLoading = ref(false);
+    const imageUrl = ref("");
+    const errorMessage = ref("");
+    const loadingMessage = ref("");
 
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-      // Initialize OpenAI
-      const openai = new OpenAI({
-          apiKey: apiKey,
-          dangerouslyAllowBrowser: true
-      })
+    // Initialize OpenAI
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      dangerouslyAllowBrowser: true,
+    });
 
-      // logic to toggle loading
-      function toggleLoadingState(loading: boolean) {
-          isLoading.value = loading;
-          if (loading) {
-              loadingMessage.value = 'Creating your avatar...'
-          } else {
-              loadingMessage.value = "";
-          }
+    // logic to toggle loading
+    function toggleLoadingState(loading: boolean) {
+      isLoading.value = loading;
+      if (loading) {
+        loadingMessage.value = "Creating your avatar...";
+      } else {
+        loadingMessage.value = "";
       }
+    }
 
-      // Generate creature image using OpenAI DALL-E
-      const generateAvatar = async () => {
-          if (!prompt.value.trim()) {
-              // Use emit from the context instead of this.$emit
-              emit('notification', 'Please enter a description');
-              return;
-          }
-          // Show loading state
-          toggleLoadingState(true);
-
-          try {
-              // Enhance prompt output
-              const enhancedPrompt = `Create a visually striking, fantastical creation: ${prompt.value}. Make it highly detailed, dramatic, with vibrant colors and impressive features while still maintaining a friendly appearance.`
-
-              // Call OpenAI API
-              const response = await openai.images.generate({
-                  model: 'dall-e-3',
-                  prompt: enhancedPrompt,
-                  n: 1,
-                  size: "1024x1024",
-                  style: 'vivid'
-              })
-
-              // Check if URL exists before assigning
-              if (response.data[0]?.url) {
-                  imageUrl.value = response.data[0].url;
-                  errorMessage.value = ''; // Clear any previous errors
-              } else {
-                  errorMessage.value = "No image URL was returned";
-                  emit('notification', 'Failed to generate image');
-              }
-
-              console.log("Image created successfully");
-          } catch (error: any) {
-              console.error('Error generating image:', error);
-              errorMessage.value = error.message;
-              emit('notification', `Error: ${error.message}`);
-          } finally {
-              // Reset loading state
-              toggleLoadingState(false);
-              prompt.value = '';
-          }
+    // Generate creature image using OpenAI DALL-E
+    const generateAvatar = async () => {
+      if (!prompt.value.trim()) {
+        // Use emit from the context instead of this.$emit
+        emit("notification", "Please enter a description");
+        return;
       }
+      // Show loading state
+      toggleLoadingState(true);
 
-      // Return data and methods
-      return {
-          prompt,
-          isLoading,
-          imageUrl,
-          errorMessage,
-          loadingMessage,
-          generateAvatar
-      };
-  }
-})
+      try {
+        // Enhance prompt output
+        const enhancedPrompt = `Create a visually striking, fantastical creation: ${prompt.value}. Make it highly detailed, dramatic, with vibrant colors and impressive features while still maintaining a friendly appearance.`;
+
+        // Call OpenAI API
+        const response = await openai.images.generate({
+          model: "dall-e-3",
+          prompt: enhancedPrompt,
+          n: 1,
+          size: "1024x1024",
+          style: "vivid",
+        });
+
+        // Check if URL exists before assigning
+        if (response.data[0]?.url) {
+          imageUrl.value = response.data[0].url;
+          errorMessage.value = ""; // Clear any previous errors
+        } else {
+          errorMessage.value = "No image URL was returned";
+          emit("notification", "Failed to generate image");
+        }
+
+        console.log("Image created successfully");
+      } catch (error: any) {
+        console.error("Error generating image:", error);
+        errorMessage.value = error.message;
+        emit("notification", `Error: ${error.message}`);
+      } finally {
+        // Reset loading state
+        toggleLoadingState(false);
+        prompt.value = "";
+      }
+    };
+
+    // Return data and methods
+    return {
+      prompt,
+      isLoading,
+      imageUrl,
+      errorMessage,
+      loadingMessage,
+      generateAvatar,
+    };
+  },
+});
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Honk&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Honk&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
 
 /* Base styles */
 .creature-generator {
-  font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   color: #e0e0e0;
   line-height: 1.6;
   display: flex;
@@ -147,10 +154,14 @@ export default defineComponent({
 }
 
 /* Common container styles */
-.header-container, .input-section, .frame {
+.header-container,
+.input-section,
+.frame {
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 /* Header styles - FULL WIDTH MODIFICATION */
@@ -159,19 +170,27 @@ export default defineComponent({
   width: 95%; /* Increased from 90% */
   max-width: 1200px; /* Increased from 800px */
   margin: 20px auto; /* Reduced top margin */
-  background: linear-gradient(-45deg, #ff9a9e, #f2a1e2, #a18cd1, #fbc2eb, #ffb347);
+  background: linear-gradient(
+    -45deg,
+    #ff9a9e,
+    #f2a1e2,
+    #a18cd1,
+    #fbc2eb,
+    #ffb347
+  );
   background-size: 400% 400%;
   animation: headerGradient 15s ease infinite;
   border: none;
 }
 
-.header-container h1, .header-container h2 {
+.header-container h1,
+.header-container h2 {
   margin: 0;
 }
 
 /* Typography */
 h1 {
-  font-family: 'Honk', sans-serif;
+  font-family: "Honk", sans-serif;
   font-weight: 800;
   font-size: clamp(2.9rem, 5vw, 2.5rem);
   margin-top: 30px;
@@ -236,7 +255,9 @@ textarea {
   font-size: clamp(0.9rem, 2vw, 1rem);
   resize: vertical;
   box-sizing: border-box;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
   font-family: inherit;
   background-color: rgba(30, 25, 45, 0.6);
   color: #e0e0e0;
@@ -259,7 +280,7 @@ button {
   border: none;
   border-radius: 8px;
   padding: clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px);
-  font-family: 'Honk', sans-serif;
+  font-family: "Honk", sans-serif;
   font-weight: 800;
   font-size: clamp(1.5rem, 2vw, 1.1rem);
   cursor: pointer;
@@ -285,7 +306,7 @@ button:active {
 
 /* Button ripple effect */
 button::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -393,7 +414,11 @@ button:focus:not(:active)::after {
   left: 5%; /* Moved closer to edge */
   width: clamp(100px, 15vw, 150px);
   height: clamp(100px, 15vw, 150px);
-  background: radial-gradient(circle, rgba(251, 194, 235, 0.6) 0%, rgba(251, 194, 235, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(251, 194, 235, 0.6) 0%,
+    rgba(251, 194, 235, 0) 70%
+  );
 }
 
 .energy-pulse:nth-child(2) {
@@ -402,7 +427,11 @@ button:focus:not(:active)::after {
   width: clamp(120px, 20vw, 200px);
   height: clamp(120px, 20vw, 200px);
   animation-delay: 1s;
-  background: radial-gradient(circle, rgba(161, 140, 209, 0.6) 0%, rgba(161, 140, 209, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(161, 140, 209, 0.6) 0%,
+    rgba(161, 140, 209, 0) 70%
+  );
 }
 
 .energy-pulse:nth-child(3) {
@@ -411,7 +440,11 @@ button:focus:not(:active)::after {
   width: clamp(100px, 18vw, 180px);
   height: clamp(100px, 18vw, 180px);
   animation-delay: 2s;
-  background: radial-gradient(circle, rgba(255, 179, 71, 0.6) 0%, rgba(255, 179, 71, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 179, 71, 0.6) 0%,
+    rgba(255, 179, 71, 0) 70%
+  );
 }
 
 .energy-pulse:nth-child(4) {
@@ -420,7 +453,11 @@ button:focus:not(:active)::after {
   width: clamp(80px, 12vw, 120px);
   height: clamp(80px, 12vw, 120px);
   animation-delay: 3s;
-  background: radial-gradient(circle, rgba(255, 154, 158, 0.6) 0%, rgba(255, 154, 158, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 154, 158, 0.6) 0%,
+    rgba(255, 154, 158, 0) 70%
+  );
 }
 
 /* Error container */
@@ -461,19 +498,23 @@ button:focus:not(:active)::after {
 
 /* Media query for larger screens - NEW */
 @media (min-width: 1400px) {
-  .container, .header-container {
+  .container,
+  .header-container {
     max-width: 90%; /* Even wider on very large screens */
   }
 }
 
 /* Media query for small screens */
 @media (max-width: 350px) {
-  .container, .header-container {
+  .container,
+  .header-container {
     width: 98%; /* Almost full width on small screens */
     padding: 5px;
   }
-  
-  .input-section, textarea, button {
+
+  .input-section,
+  textarea,
+  button {
     padding: 10px;
   }
 }
@@ -483,15 +524,16 @@ button:focus:not(:active)::after {
   .creature-generator {
     background-image: linear-gradient(160deg, #0e0c16 0%, #1a1526 100%);
   }
-  
-  .input-section, .frame {
+
+  .input-section,
+  .frame {
     background-color: rgba(25, 20, 35, 0.8);
   }
-  
+
   textarea {
     background-color: rgba(20, 15, 30, 0.8);
   }
-  
+
   .empty-frame {
     background-color: rgba(20, 15, 30, 0.7);
   }
@@ -499,14 +541,26 @@ button:focus:not(:active)::after {
 
 /* Animations */
 @keyframes headerGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes ripple {
@@ -521,14 +575,27 @@ button:focus:not(:active)::after {
 }
 
 @keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1.0); }
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
 }
 
 @keyframes pulse {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { opacity: 0.2; }
-  100% { transform: scale(1.2); opacity: 0; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
 }
-
 </style>

@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
 
 interface ImportMeta {
-  readonly env: Record<string, any>
+  readonly env: Record<string, any>;
 }
