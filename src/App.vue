@@ -7,6 +7,7 @@ import AvatarGenerator from './components/AvatarGenerator.vue';
   <div>
     <!-- Your app content here -->
     <AvatarGenerator />
+          
   </div>
 </template>
 
