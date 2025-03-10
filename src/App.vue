@@ -1,6 +1,6 @@
-<script setup lang="ts" >
+<script setup lang="ts">
 // Component imports and logic here
-import AvatarGenerator from './components/AvatarGenerator.vue';
+import AvatarGenerator from "./components/AvatarGenerator.vue";
 </script>
 
 <template>
