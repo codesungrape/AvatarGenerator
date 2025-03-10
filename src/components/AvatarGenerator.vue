@@ -58,7 +58,6 @@ export default defineComponent({
     const loadingMessage = ref("");
 
     // this error still allows it to be pushed into git- very confusing
-    // chore: add pre-push git hook for branch naming, dependencies, and commit format
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
     // Initialize OpenAI
