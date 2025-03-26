@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Homepage features", () => {
-  test("has title", async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto("https://avatar-generator-delta.vercel.app/");
-
+  });
+  test("has title", async ({ page }) => {
     // Expect a title "to contain" a substring.
     await expect(page).toHaveTitle(
       /Who Were You Meant To Be: Avatar Generator/,
@@ -11,23 +12,51 @@ test.describe("Homepage features", () => {
     await expect(page).toHaveTitle(/.*Avatar Generator.*/);
   });
 
-  // test('has header', async ({ page }) => {
-  //   await page.goto('https://avatar-generator-delta.vercel.app/');
+  test("header elements should correct values", async ({ page }) => {
+    const headerContainer = page.locator(".header-container");
+    await expect(headerContainer).toBeVisible(); // does header container exist/render?
 
-  //   // Expect a title "to contain" a substring.
-  //   await expect(page).toHaveTitle(/Who Were You Meant To Be: Avatar Generator/);
-  //   await expect(page).toHaveTitle(/.*Avatar Generator.*/);
-  // });
-});
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+    await expect(h1).toHaveText(/Who You Were Meant To Be/);
 
-test("get started link", async ({ page }) => {
-  await page.goto("https://playwright.dev/");
+    const h2 = page.locator("h2");
+    await expect(h2).toBeVisible();
+    await expect(h2).toHaveText(
+      /Craft Your Ultimate Avatar, describe your vision and witness it materialize/,
+    );
+  });
 
-  // Click the get started link.
-  await page.getByRole("link", { name: "Get started" }).click();
+  test("should be responsive", async ({ page }) => {
+    // Test responsiveness by resizing viewport
+    // Mobile viewport test
+    await page.setViewportSize({ width: 375, height: 667 });
+    const mobileHeaderContainer = page.locator(".header-container");
+    await expect(mobileHeaderContainer).toBeVisible();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(
-    page.getByRole("heading", { name: "Installation" }),
-  ).toBeVisible();
+    // Tablet viewport test
+    await page.setViewportSize({ width: 768, height: 1024 });
+    const tabletHeaderContainer = page.locator(".header-container");
+    await expect(tabletHeaderContainer).toBeVisible();
+
+    // Desktop viewport test
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const desktopHeaderContainer = page.locator(".header-container");
+    await expect(desktopHeaderContainer).toBeVisible();
+  });
+
+  test("should have proper heading hierarchy", async ({ page }) => {
+    const h1Count = await page.locator("h1").count();
+    expect(h1Count).toBe(1);
+
+    const headings = await page.evaluate(() => {
+      const headingElements = Array.from(
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+      );
+      return headingElements.map((header) => ({
+        level: parseInt(header.tagName.substring(1)),
+        text: header.textContent,
+      }));
+    });
+  });
 });
