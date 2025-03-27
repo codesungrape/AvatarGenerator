@@ -1,6 +1,5 @@
 <template>
   <div class="creature-generator">
-    <!-- Decorative elements -->
     <div class="energy-pulse" />
     <div class="energy-pulse" />
     <div class="energy-pulse" />
