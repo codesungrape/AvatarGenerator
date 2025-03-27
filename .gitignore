@@ -13,6 +13,11 @@ dist
 dist-ssr
 *.local
 
+# Coverage files
+coverage/
+.nyc_output/
+playwright-coverage/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
