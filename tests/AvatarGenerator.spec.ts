@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Homepage features", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("https://avatar-generator-delta.vercel.app/");
+    await page.goto("/");
   });
   test("has title", async ({ page }) => {
     // Expect a title "to contain" a substring.
@@ -27,6 +27,64 @@ test.describe("Homepage features", () => {
     );
   });
 
+  test("should have proper heading hierarchy", async ({ page }) => {
+    const h1Count = await page.locator("h1").count();
+    expect(h1Count).toBe(1);
+
+    const headings = await page.evaluate(() => {
+      const headingElements = Array.from(
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+      );
+      return headingElements.map((header) => ({
+        level: parseInt(header.tagName.substring(1)),
+        text: header.textContent,
+      }));
+    });
+  });
+
+  test("textarea element tests", async ({ page }) => {
+    const textarea = page.locator("textarea");
+    await expect(textarea).toBeVisible();
+    await expect(textarea).toHaveAttribute(
+      "placeholder",
+      expect.stringContaining("Create your alter ego"),
+    );
+    await expect(textarea).toHaveAttribute(
+      "placeholder",
+      "Create your alter ego! Try: 'A secret agent in a tuxedo with futuristic glasses and a sleek hoverboard.'",
+    );
+  });
+
+  test("Button tests", async ({ page }) => {
+    const button = page.locator("button");
+    await expect(button).toBeVisible();
+    await expect(button).toBeEnabled();
+    await expect(button).toHaveText("Create Your Legend");
+  });
+
+  test("Check Frame is exists and image is not visible", async ({ page }) => {
+    const frame = page.locator(".frame");
+    await expect(frame).toBeVisible();
+    const emptyFrame = page.locator(".empty-frame h3");
+    await expect(emptyFrame).toBeVisible();
+    await expect(emptyFrame).toHaveText("Your creation will manifest here");
+
+    const image = page.locator("img");
+    await expect(image).not.toBeVisible();
+  });
+});
+
+test.describe("Input validation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+  });
+});
+
+test.describe("Tests to check responsiveness", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("https://avatar-generator-delta.vercel.app/");
+  });
+
   test("should be responsive", async ({ page }) => {
     // Test responsiveness by resizing viewport
     // Mobile viewport test
@@ -43,20 +101,5 @@ test.describe("Homepage features", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const desktopHeaderContainer = page.locator(".header-container");
     await expect(desktopHeaderContainer).toBeVisible();
-  });
-
-  test("should have proper heading hierarchy", async ({ page }) => {
-    const h1Count = await page.locator("h1").count();
-    expect(h1Count).toBe(1);
-
-    const headings = await page.evaluate(() => {
-      const headingElements = Array.from(
-        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
-      );
-      return headingElements.map((header) => ({
-        level: parseInt(header.tagName.substring(1)),
-        text: header.textContent,
-      }));
-    });
   });
 });
