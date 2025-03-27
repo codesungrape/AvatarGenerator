@@ -1,0 +1,16 @@
+{
+  "all": true,
+  "check-coverage": false,
+  "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.js"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "tests/**/*",
+    "**/*.d.ts",
+    "node_modules/**"
+  ],
+  "reporter": ["html", "text", "lcov"],
+  "extension": [".js", ".ts", ".vue"],
+  "report-dir": "./coverage",
+  "temp-dir": "./.nyc_output"
+}
